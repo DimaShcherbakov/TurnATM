@@ -53,8 +53,6 @@ function counting(){
     users.innerHTML = turn.count;
     setInterval(() => {
         let rand = randomNumber(1,10);
-        // textField.appendChild("li");
-        // li.innerHTML = `was updated on ${rand} + ${turn.count}`;
         console.log(`was updated on ${rand} + ${turn.count}`)
         turn.count += rand;
         users.innerHTML = turn.count;
