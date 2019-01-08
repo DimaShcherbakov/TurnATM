@@ -11,21 +11,22 @@ let styled = new Render();
 queue.increment();
 
 function eventHandler(typeATM, element, count){
-    styled.setColor(element,"green");//------------
-    typeATM.changeState();
-    setTimeout(() => {
-        if(queue.countUsers != 0 && typeATM.isFree === false ){
-            queue.decrement();
-            typeATM.incrementUsers();
-            typeATM.changeState();
-            styled.setColor(element,"red");
+    // if(queue.numUsers > 0 ){
+        styled.setColor(element,"red");//------------
+        typeATM.changeState();
+        queue.decrement();
+        typeATM.incrementUsers();
+        setTimeout(() => {
+            styled.setColor(element,"green");
             styled.setCount(count,typeATM.countUsers)//-----------
+            typeATM.changeState();
             console.log(`${typeATM}is free`,"count = ", typeATM.countUsers, typeATM.isFree) ;
-        }
-    },randomNumber(1,3)*1000);
+        },randomNumber(1,3) * 1000);
+    // }
 }
 
 ATM1.on("free", () => {
+    ATM1.changeState();
     console.log("ATM is free")
 });
 
@@ -34,6 +35,7 @@ ATM1.on("busy",() => {
 });
     
 ATM2.on("free", () => {
+    ATM2.changeState();
     console.log("ATM is free")
 });
 
@@ -43,23 +45,14 @@ ATM2.on("busy",() => {
 
 function workLoop(){
     setInterval(() => {
-        if (queue.countUsers != 0 ){
-        if(ATM1.isFree && ATM2.isFree){
-            ATM1.emit("busy");
-            ATM2.emit("busy");
-        }else if(ATM1.isFree === false && ATM2.isFree === false){
-            ATM1.emit("free")
-            ATM2.emit("free")
-        }else if(ATM1.isFree && ATM2.isFree === false){
-            ATM1.emit("busy")
-        }else if(ATM2.isFree && ATM1.isFree === false){
-            ATM2.emit("busy")
+        if(queue.numUsers > 0){
+            if(ATM1.isFree){
+                ATM1.emit("busy");
+            }
+            if(ATM2.isFree && ATM1.isFree === false){
+                ATM2.emit("busy");
+            }
         }
-    }else {
-        ATM1.emit("free");
-        ATM2.emit("free");
-    }
-        
-    },1000);
+    },500);
 }
 workLoop();
