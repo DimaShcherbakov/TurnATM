@@ -7,28 +7,41 @@
  </head>
  <body>
     <main>
-        <div id = "root"></div>
-        <div class = "atms">
-            <div class = "wrapper">
+        <div id = "root">
+            <div class = "form">
+                <div class = "inputs">
+                    <input type="number" class="type" placeholder = "0">
+                    <span>&mdash;</span>
+                    <input type="number" class="type" placeholder = "0">
+                </div>
+                <button class = "btn" id = "btn" >Add ATM</button>
+            </div>    
+        </div>
+        <div id = "atms">
+            <!-- <div class = "wrapper">
                 <p id="atm1-counter">0</p>
-                <div class = "atm" id ="atm-1"></div>
+                <div class = "atm" id ="atm-1">
+                    <span>&times;</span>
+                </div>
             </div>
             <div class = "wrapper">
                 <p id="atm2-counter">0</p>
                 <div class = "atm" id ="atm-2"></div>
-            </div>
+            </div> -->
         </div>
         <div class = "counter">
             <p id="user-count">0</p>
         </div>
     </main>
-    <!-- <script src = "./Observer.js"></script> -->
-    <!-- <script src = "./main.js"></script> -->
+    
     <script src = './src/EventEmitter.js'></script>
+    <script src = './src/Component.js'></script>
     <script src = './src/Queue.js'></script>
     <script src = './src/ATM.js'></script>
     <script src = './src/Render.js'></script>
-    <script src = './src/MainFunc.js'></script>
+    
+    <script src = './src/foo.js'></script>
     <script src = './src/RenderFunc.js'></script>
+
 </body>
 </html>

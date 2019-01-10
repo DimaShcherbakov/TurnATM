@@ -11,7 +11,6 @@ let styled = new Render();
 queue.increment();
 
 function eventHandler(typeATM, element, count){
-    // if(queue.numUsers > 0 ){
         styled.setColor(element,"red");//------------
         typeATM.changeState();
         queue.decrement();
@@ -22,7 +21,6 @@ function eventHandler(typeATM, element, count){
             typeATM.changeState();
             console.log(`${typeATM}is free`,"count = ", typeATM.countUsers, typeATM.isFree) ;
         },randomNumber(1,3) * 1000);
-    // }
 }
 
 ATM1.on("free", () => {
@@ -49,10 +47,11 @@ function workLoop(){
             if(ATM1.isFree){
                 ATM1.emit("busy");
             }
-            if(ATM2.isFree && ATM1.isFree === false){
+            if(ATM1.isFree === false && 
+                queue.numUsers >= 1){
                 ATM2.emit("busy");
             }
         }
-    },500);
+    },1000);
 }
 workLoop();
