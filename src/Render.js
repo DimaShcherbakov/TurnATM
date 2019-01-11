@@ -1,4 +1,4 @@
-function Render(){
+function SetColor(){
     this.setColor = function (element,key){
         switch(key){
             case "red": element.style.backgroundColor = "red";break;

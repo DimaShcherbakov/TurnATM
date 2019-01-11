@@ -1,7 +1,7 @@
 let ATM1 = new ATM();
 let ATM2 = new ATM();
 let queue = new Queue();
-let styled = new Render();
+let styled = new SetColor();
 
 let timer;
 
@@ -29,18 +29,20 @@ function addEventsAll(arr){
         element.id = index;
 
         element.on("free", () => {
-            element.changeState();
+            
         });
 
         element.on("busy", () => {  
             if(queue.numUsers > 0 && element.isFree === true){
                 element.changeState();
                 queue.decrement();
+                styled.setColor(document.getElementById(`atm-${index}`), "red");
                 setTimeout(() => {
                     element.changeState();
                     element.incrementUsers();
                     document.getElementById(`atm${index}-counter`).innerHTML = element.countUsers;
                     console.log("count users:", element.countUsers);
+                    styled.setColor(document.getElementById(`atm-${index}`), "green")
                 }, randomNumber(2,4) * 1000)
             }
         });
@@ -76,10 +78,11 @@ addEventRemove(arrATMs);
 function Timeout(arr,i){
     setTimeout(() => {
         (function(index) {
+            // arr[index].emit("free");
             arr[index].emit("busy");  
         })(i);
         Timeout(arr,i);
-    },1000);
+    },5000);
 }
 
 function WorkLoop(arr){
