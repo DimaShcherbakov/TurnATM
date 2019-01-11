@@ -1,10 +1,11 @@
 function ATM(){
+    Component.apply(this, arguments);
     this.countUsers = 0;
     this.isFree = true;
-    Component.apply(this, arguments);
 }
 
 ATM.prototype = Object.create(Component.prototype);
+ATM.prototype.constructor = ATM;
 
 ATM.prototype.incrementUsers = function(){
     this.countUsers = this.countUsers + 1;

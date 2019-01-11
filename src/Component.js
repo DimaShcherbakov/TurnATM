@@ -1,7 +1,7 @@
 function Component(){
+    EventEmitter.apply(this, arguments);
     this.template = "";
     this.id = 0;
-    EventEmitter.apply(this, arguments);
 }
 
 Component.prototype = Object.create(EventEmitter.prototype);
@@ -12,8 +12,5 @@ Component.prototype.render = function(id, HTML){
 }
 
 Component.prototype.updateParams = function(arr,key){
-    switch (key) {
-        case "counter": ;break;
-        case "atms": ;break;
-    }
+
 }  

@@ -1,14 +1,19 @@
 let counter = document.getElementById("user-count");
+let timer;
 
 function Queue(){
-    this.numUsers = 1;
+    this.numUsers = 2;
 }
 
-Queue.prototype.increment = function(){
-    setInterval(()=>{
+Queue.prototype.increment = function(min, max){
+    timer = setInterval(()=>{
         this.numUsers += 5 ;
         counter.innerHTML = this.numUsers;
-    },randomNumber(1,4) * 1000);
+    },randomNumber(min,max) * 1000);
+}
+
+Queue.prototype.clearInterval = function(){
+    clearInterval(timer);
 }
 
 Queue.prototype.decrement = function(){

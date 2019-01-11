@@ -3,9 +3,11 @@ let ATM2 = new ATM();
 let queue = new Queue();
 let styled = new SetColor();
 
-let timer;
-
-queue.increment();
+const randomNumber = (min, max) => {
+    let rand = min - 0.5 + Math.random() * (max - min + 1)
+    rand = Math.round(rand);
+    return rand;
+}
 
 document.getElementById("btn").addEventListener("click",() => {
     arrATMs.push(new ATM());
@@ -17,6 +19,13 @@ document.getElementById("btn").addEventListener("click",() => {
     WorkLoop(arrATMs);
     
     console.log(arrATMs);
+})
+
+document.getElementById("add-interval").addEventListener("click",() => {
+    let min = document.getElementById("input1").value;
+    let max = document.getElementById("input2").value;
+    queue.clearInterval();
+    queue.increment(min,max);
 })
 
 let arrATMs = [ATM1, ATM2];
@@ -93,4 +102,7 @@ function WorkLoop(arr){
         }
     }   
 }
+queue.increment(1,4);
 WorkLoop(arrATMs);
+
+    
