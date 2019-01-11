@@ -6,10 +6,8 @@ function Component(){
 
 Component.prototype = Object.create(EventEmitter.prototype);
 
-Component.prototype.render = function(id, HTML, arr){
+Component.prototype.render = function(id, HTML){
     let root = document.getElementById(id);
-    // const as = root.innerHTML
-    // root.innerHTML = '' 
     root.innerHTML += HTML;
 }
 

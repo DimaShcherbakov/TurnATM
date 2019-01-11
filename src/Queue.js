@@ -6,7 +6,7 @@ function Queue(){
 
 Queue.prototype.increment = function(){
     setInterval(()=>{
-        this.numUsers += 1 ;
+        this.numUsers += 5 ;
         counter.innerHTML = this.numUsers;
     },randomNumber(1,4) * 1000);
 }
