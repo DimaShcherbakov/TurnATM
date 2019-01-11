@@ -13,6 +13,7 @@ queue.increment();
 
 document.getElementById("btn").addEventListener("click",() => {
     arrATMs.push(new ATM());
+    // сколько у тебя коллбеков после каждого вызова у каждого АТМа?
     addEventsAll(arrATMs);
     addElements(arrATMs);
     addEventRemove(arrATMs)

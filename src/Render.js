@@ -1,5 +1,6 @@
 function Render(){
     this.setColor = function (element,key){
+        // а если цветов будет больше?
         switch(key){
             case "red": element.style.backgroundColor = "red";break;
             case "green": element.style.backgroundColor = "green";break;
