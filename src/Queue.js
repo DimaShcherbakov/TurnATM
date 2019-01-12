@@ -1,4 +1,3 @@
-let counter = document.getElementById("user-count");
 let timer;
 
 function Queue(){
@@ -8,7 +7,7 @@ function Queue(){
 Queue.prototype.increment = function(min, max){
     timer = setInterval(()=>{
         this.numUsers += 5 ;
-        counter.innerHTML = this.numUsers;
+        drawing.setCount(document.getElementById("user-count"), this.numUsers);
     },randomNumber(min,max) * 1000);
 }
 
