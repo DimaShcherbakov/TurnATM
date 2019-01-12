@@ -7,7 +7,7 @@ let ATM1 = new ATM();
 let ATM2 = new ATM();
 let queue = new Queue();
 let drawing = new SetColor();
-
+let timer1;
 
 document.getElementById("btn").addEventListener("click",() => {
     arrATMs.push(new ATM());
@@ -16,6 +16,7 @@ document.getElementById("btn").addEventListener("click",() => {
     addElements(arrATMs);
     addEventRemove(arrATMs);
 
+    clearTimeout(timer1);
     WorkLoop(arrATMs);
     
     console.log(arrATMs);
@@ -79,6 +80,7 @@ function addEventRemove(arr){
             addElements(arrATMs);
             addEventRemove(arrATMs);
 
+            clearTimeout(timer1);
             WorkLoop(arrATMs);
         })
     })
@@ -86,7 +88,7 @@ function addEventRemove(arr){
 addEventRemove(arrATMs);
 
 function Timeout(arr,i){
-    setTimeout(() => {
+    timer1 = setTimeout(() => {
         (function(index) {
             arr[index].emit("busy");  
         })(i);
@@ -95,7 +97,6 @@ function Timeout(arr,i){
 }
 
 function WorkLoop(arr){
-    
     for (let i = 0; i < arr.length; i++){
         if(queue.numUsers > 0 ){
             Timeout(arr, i);
