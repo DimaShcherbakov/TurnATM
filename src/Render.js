@@ -6,3 +6,5 @@ function SetColor(){
         element.innerHTML = number;
     }
 }
+
+export default SetColor ;

@@ -1,3 +1,5 @@
+import Component from './Component'
+
 function ATM(){
     Component.apply(this, arguments);
     this.countUsers = 0;
@@ -15,4 +17,5 @@ ATM.prototype.changeState = function(){
     this.isFree = !this.isFree;
 }
 
+export default ATM;
 

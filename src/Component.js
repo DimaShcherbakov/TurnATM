@@ -1,3 +1,5 @@
+import EventEmitter from './EventEmitter'
+
 function Component(){
     EventEmitter.apply(this, arguments);
     this.template = "";
@@ -14,3 +16,5 @@ Component.prototype.render = function(id, HTML){
 Component.prototype.updateParams = function(arr,key){
 
 }  
+
+export default Component ;

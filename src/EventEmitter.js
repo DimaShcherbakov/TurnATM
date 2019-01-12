@@ -10,3 +10,4 @@ EventEmitter.prototype.emit = function(event, additionalParam) {
     this.eventTable[event](additionalParam);
 }
 
+export default EventEmitter ;
