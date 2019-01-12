@@ -30,29 +30,33 @@ document.getElementById("add-interval").addEventListener("click",() => {
 
 let arrATMs = [ATM1, ATM2];
 
+function properties(el,i){
+    
+    el.template = `<div class = "wrapper"><p id="atm${i}-counter">${el.countUsers}</p><div class = "atm" id ="atm-${i}"><span id = "remove-el-${i}">&times;</span></div></div>`;
+       
+    el.id = i;
+
+    el.on("free", () => {
+        
+    });
+
+    el.on("busy", () => {  
+            el.changeState();
+            queue.decrement();
+            drawing.setColor(document.getElementById(`atm-${i}`), "red");
+            setTimeout(() => {
+                el.changeState();
+                el.incrementUsers();
+                drawing.setCount(document.getElementById(`atm${i}-counter`), el.countUsers);
+                console.log("count users:", el.countUsers);
+                drawing.setColor(document.getElementById(`atm-${i}`), "green")
+            }, randomNumber(2,4) * 1000)
+    });
+}
+
 function addEventsAll(arr){
     arr.forEach((element, index) => {
-
-        element.template = `<div class = "wrapper"><p id="atm${index}-counter">${element.countUsers}</p><div class = "atm" id ="atm-${index}"><span id = "remove-el-${index}">&times;</span></div></div>`;
-       
-        element.id = index;
-
-        element.on("free", () => {
-            
-        });
-
-        element.on("busy", () => {  
-                element.changeState();
-                queue.decrement();
-                drawing.setColor(document.getElementById(`atm-${index}`), "red");
-                setTimeout(() => {
-                    element.changeState();
-                    element.incrementUsers();
-                    document.getElementById(`atm${index}-counter`).innerHTML = element.countUsers;
-                    console.log("count users:", element.countUsers);
-                    drawing.setColor(document.getElementById(`atm-${index}`), "green")
-                }, randomNumber(2,4) * 1000)
-        });
+        properties(element,index);
     });
 }
 
@@ -93,7 +97,7 @@ function Timeout(arr,i){
 function WorkLoop(arr){
     
     for (let i = 0; i < arr.length; i++){
-        if(queue.numUsers > 0 && arr[i].isFree === true){
+        if(queue.numUsers > 0 ){
             Timeout(arr, i);
         }
     }   

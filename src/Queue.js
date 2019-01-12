@@ -10,7 +10,7 @@ function Queue(){
 
 Queue.prototype.increment = function(min, max){
     timer = setInterval(()=>{
-        this.numUsers += 5 ;
+        this.numUsers += 2 ;
         drawing.setCount(document.getElementById("user-count"), this.numUsers);
     },randomNumber(min,max) * 1000);
 }
