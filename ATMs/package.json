@@ -1,0 +1,24 @@
+{
+  "name": "mentor-variant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --mode production",
+    "eslint": "eslint src",
+    "eslint:fix": "eslint src --fix"
+  },
+  "author": "DmitryShcherbakov",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}

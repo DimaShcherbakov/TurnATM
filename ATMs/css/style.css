@@ -1,0 +1,79 @@
+body{
+    width:960px;
+    margin:0 auto;
+}
+#atms{
+    display:flex;
+    justify-content: center;
+    flex-wrap:wrap;
+}
+.atm{
+    position:relative;
+    width:50px;
+    height:100px;
+    margin:40px;
+    outline:2px solid black;
+    background-color:green;
+}
+.wrapper {
+    display:inline-block;
+    text-align: center;  
+}
+#counter{
+    display:flex;
+    justify-content: center;
+    margin:0 auto;
+    width:40px;
+    height:100px;
+    text-align: center;
+    outline:2px solid black;
+}
+
+ul{
+    position:absolute;
+    top: 80px;
+    width:300px;
+}
+#root{
+    display: flex;
+    justify-content: center;
+    margin:auto 0;
+}
+.btn{
+    width:100px;
+    padding-bottom:10px;
+    padding-top:10px;
+    border-radius: 5px;
+    margin:0 auto;
+    margin-top:20px;
+    color:white;
+    background-color: blueviolet;
+    cursor:pointer;
+}
+.type{
+    width:100px;
+    padding-top:10px;
+    padding-bottom:10px;
+    text-align: center;
+}
+.form{
+    display:flex;
+    flex-direction: column; 
+}
+#atms span{
+    position:absolute;
+    color:white;
+    right:31%;
+    top:70px;
+}
+#atms span:hover{
+    cursor:pointer;
+}
+#atms div{
+    position:relative;
+}
+#atms p{
+    text-align:center;
+}
+
+
