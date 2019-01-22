@@ -18,8 +18,10 @@ ATM.prototype.constructor = ATM
 
 ATM.prototype.render = function () {
   return `<div id="wrapATM${this.id}">
-                <p id="atm${this.id}-counter">${this.core.countUsers}</p>
-                <div class = "atm" id ="atm-${this.id}"></div>
+                <p class = "speech" id="atm${this.id}-counter"> Users served: ${this.core.countUsers}</p>
+                <div class = "atm">
+                  <div class = "display" id ="atm-${this.id}"></div>
+                </div>
             </div>`
 }
 

@@ -7,11 +7,31 @@ const ATMparent = document.getElementById('atms')
 const Queueparent = document.getElementById('counter')
 const BtnAddATM = document.getElementById('btn')
 const BtnAddInterval = document.getElementById('add-interval')
+const inputMin = document.getElementById('input1')
+const inputMax = document.getElementById('input2')
 
 const queue = new Queue()
 
 const arrayATMs = [new ATM(0), new ATM(1)]
 let newArr = []
+let min
+let max
+BtnAddInterval.addEventListener('click', () => {
+  min = inputMin.value
+  max = inputMax.value
+  if (min !== '' && max !== '') {
+    if (min !== 0) {
+      if (min !== 0 && max !== 0) {
+        queue.core.clearInterval()
+        queue.core.increment(min, max)
+        queue.core.changeState('user-count', queue.core.numUsers)
+      }
+    }
+  } else {
+    console.log('Are you stupid???')
+  }
+})
+
 function RenderingATMs () {
   newArr = arrayATMs.map((item, index) => {
     item.on('CloseComponent_Click', () => {
@@ -28,7 +48,8 @@ function RenderingATMs () {
       queue.core.numUsers -= 1
       console.log(`ATM ${index} serviced:`, item.core.countUsers)
       setTimeout(() => {
-        item.core.changeState(`atm${index}-counter`, item.core.countUsers)
+        item.core.changeState(`atm${index}-counter`, `Users served: ${item.core.countUsers}`)
+        queue.core.changeState('user-count', queue.core.numUsers)
         item.core.emit('free')
       }, randomNumber(2, 4) * 1000)
     })
@@ -46,19 +67,22 @@ function RenderingATMs () {
         )
       } else {
         console.log('queue is about nothing')
+        setTimeout(() => {
+          item.core.emit('free')
+        }, randomNumber(min, max) * 1000 + 5000)
       }
     })
 
-    console.log(item)
     ATMparent.appendChild(item.element)
-    console.log(arrayATMs)
     item.core.emit('free')
   })
 }
 
 function RenderingQueue () {
+  min = 1
+  max = 4
   Queueparent.appendChild(queue.element)
-  queue.core.increment()
+  queue.core.increment(min, max)
 }
 
 RenderingATMs()
@@ -81,7 +105,7 @@ BtnAddATM.addEventListener('click', () => {
     console.log(`ATM ${newATM.id} serviced: `, newATM.core.countUsers)
     setTimeout(() => {
       newATM.core.emit('free')
-      newATM.core.changeState(`atm${newATM.id}-counter`, newATM.core.countUsers)
+      newATM.core.changeState(`atm${newATM.id}-counter`, `Users served: ${newATM.core.countUsers}`)
       newATM.core.changeColor(`atm-${newATM.id}`, 'green')
     }, randomNumber(2, 4) * 1000)
   })
@@ -100,15 +124,12 @@ BtnAddATM.addEventListener('click', () => {
       )
     } else {
       console.log('queue is about nothing')
+      setTimeout(() => {
+        newATM.core.emit('free')
+      }, randomNumber(min, max) * 1000 + 6000)
     }
   })
   newATM.core.emit('free')
   newArr.push(newATM)
   ATMparent.appendChild(newATM.element)
-})
-
-console.log(queue.core.numUsers)
-
-BtnAddInterval.addEventListener('click', () => {
-  console.log('add-interval')
 })

@@ -1,14 +1,21 @@
+import randomNumber from './randomNumber'
+
 function QueueLogic () {
   this.numUsers = 10
 }
-
-QueueLogic.prototype.increment = function () {
+let interval
+QueueLogic.prototype.increment = function (min, max) {
   const that = this
-  setInterval(() => {
-    that.numUsers++
+  that.changeState('user-count', that.numUsers)
+  interval = setInterval(() => {
+    that.numUsers += 1
     that.changeState('user-count', that.numUsers)
     console.log(`Number of users in queue = ${that.numUsers}`)
-  }, 2000)
+  }, randomNumber(min, max) * 1000)
+}
+
+QueueLogic.prototype.clearInterval = function () {
+  clearInterval(interval)
 }
 
 QueueLogic.prototype.changeState = function (id, value) {
