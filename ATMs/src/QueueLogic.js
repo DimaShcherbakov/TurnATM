@@ -1,9 +1,11 @@
 import randomNumber from './randomNumber'
 
 function QueueLogic () {
-  this.numUsers = 10
+  this.numUsers = 15
 }
+
 let interval
+
 QueueLogic.prototype.increment = function (min, max) {
   const that = this
   that.changeState('user-count', that.numUsers)
