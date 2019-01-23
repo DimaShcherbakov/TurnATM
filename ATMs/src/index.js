@@ -19,16 +19,15 @@ let max
 BtnAddInterval.addEventListener('click', () => {
   min = inputMin.value
   max = inputMax.value
-  if (min !== '' && max !== '') {
-    if (min !== 0) {
-      if (min !== 0 && max !== 0) {
-        queue.core.clearInterval()
-        queue.core.increment(min, max)
-        queue.core.changeState('user-count', queue.core.numUsers)
-      }
+  if ((min === '' && max === '') || (min === '0' && max === '0')) {
+    if ((min === '' && max === '0') || (min === '0' && max === '')) {
+      console.log('Wrong value')
     }
   } else {
-    console.log('Are you stupid???')
+    queue.core.clearInterval()
+    queue.core.increment(min, max)
+    queue.core.changeState('user-count', queue.core.numUsers)
+    console.log('OK')
   }
 })
 
@@ -50,8 +49,8 @@ function RenderingQueue () {
   Queueparent.appendChild(queue.element)
   let promise = new Promise((resolve, reject) => {
     queue.core.increment(min, max)
-    resolve(queue.core.numUsers)
     console.log('Who is there??')
+    resolve(queue.core.numUsers)
   })
   promise.then(resolve => {
     if (resolve > 20) {
