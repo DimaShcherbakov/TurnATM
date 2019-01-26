@@ -1,21 +1,31 @@
 const express = require('express')
 const morgan = require('morgan')
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+const atms = require('./routes/api/atm')
+const db = require('./config/keys').mongoURI
+
 const app = express()
 
+mongoose
+  .connect(db)
+  .then(() => {
+    console.log('MongoDB connected')
+  })
+  .catch(err => { console.log(err) })
+
 app.use(morgan('short'))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use('/api/atm', atms)
 
 app.get('/', (req, res) => {
   console.log('Responding to root route')
-  res.send('hello from roots!!!!!!!!!!!! ')
+  res.send('hello from rootsssssssssss!!!!!!!!!!!! ')
 })
 
-app.get('/users', (req, res) => {
-  let user1 = { firstName: "Stephen", lastName: "Curry" }
-  const user2 = { firstName: "Kevin", lastName: "Speed" }
-  res.json([user1, user2])
-  // res.send('Nodemon  auto updates when I save this file')
-})
+const port = process.env.PORT || 5000
 
-app.listen(3001, () => {
-  console.log('Server is up and listening on 3001')
+app.listen(port, () => {
+  console.log(`Server is up and listening on ${port}`)
 })

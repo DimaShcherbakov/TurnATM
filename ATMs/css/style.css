@@ -108,7 +108,7 @@ p.speech:before {
 	position: absolute; 
 	width: 0; 
 	height: 0; 
-	left: 40px; 
+	left: 55px; 
 	top: 50px; 
 	border: 10px solid; 
 	border-color: #666 transparent transparent #666; 
@@ -118,7 +118,7 @@ p.speech:after {
 	position: absolute; 
 	width: 0; 
 	height: 0; 
-	left: 43px; 
+	left: 58px; 
 	top: 50px; 
 	border: 6px solid; 
 	border-color: #fff transparent transparent #fff; 
