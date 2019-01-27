@@ -7,18 +7,18 @@ router.get('/', (req, res) => {
     .find()
     .sort({ date: -1 })
     .then(atm => res.json(atm))
-    .catch(err => res.status(404).json({ error: "No atms found" }));
+    .catch(err => res.status(404).json({ error: "No atms found" }))
 })
 
 router.post('/data', (req, res) => {
   Atm.findOne({ id: req.body.id })
     .then(data => {
       if (data) {
-        return res.status(400).json({ atm: 'Atm already exists' })
+        return res.status(400).json({ atm: 'Atm already existed'})
       } else {
         const newAtm = new Atm({
           id: req.body.id,
-          count: req.body.count
+          counter: req.body.counter
         })
         newAtm.save()
           .then(data => {
@@ -33,7 +33,7 @@ router.put('/data', (req, res) => {
   Atm.findOne({ id: req.body.id })
     .then(data => {
       if (data) {
-        data.counter = req.body.count
+        data.counter = req.body.counter
         data.save()
           .then(data => res.json(data))
           .catch(err => res.json({ error: "element wasn't saved" }))
@@ -42,8 +42,8 @@ router.put('/data', (req, res) => {
     .catch(err => res.json({ error: "Error" }))
 })
 
-router.delete('/data', (req, res) => {
-  Atm.findOne({ id: req.body.id })
+router.delete('/data/:id', (req, res) => {
+  Atm.findOne({ id: req.params.id })
     .then(data => {
       data.remove()
         .then(data => res.json({ atm: "was deleted"}))

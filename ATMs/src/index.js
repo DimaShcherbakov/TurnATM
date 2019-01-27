@@ -11,17 +11,7 @@ const inputMin = document.getElementById('input1')
 const inputMax = document.getElementById('input2')
 
 const queue = new Queue()
-// example------------------->
 
-const getBreeds = async () => {
-  try {
-    console.log(await axios.get('http://localhost:5000/api/atm'))
-  } catch (error) {
-    console.error(error)
-  }
-}
-getBreeds()
-// ---------------------->
 const arrayATMs = [new ATM(0), new ATM(1)]
 let newArr = []
 let min
@@ -37,7 +27,6 @@ BtnAddInterval.addEventListener('click', () => {
     clearInterval(interval)
     queueLoop(min, max)
     queue.core.changeState('user-count', queue.core.numUsers)
-    console.log('OK')
   }
 })
 
@@ -49,7 +38,7 @@ function RenderingATMs () {
       const child = document.getElementById(`wrapATM${index}`)
       parent.removeChild(child)
     })
-    AddEvents(item)
+    AddEvents(item, index)
   })
 }
 
@@ -79,24 +68,51 @@ function RenderingQueue () {
 RenderingATMs()
 RenderingQueue()
 
-function AddEvents (element) {
+function AddEvents (element, index) {
   element.on('CloseComponent_Click', () => {
     const parent = document.getElementById('atms')
     const child = document.getElementById(`wrapATM${element.id}`)
-    parent.removeChild(child)
-    element.core.isWork = false
+    // DELETE localhost:5000/api/atm/data
+    axios
+      .delete(`http://localhost:5000/api/atm/data/ATM${element.id}`)
+      .then(res => {
+        console.log("Delete")
+        parent.removeChild(child)
+        element.core.isWork = false
+      })
+      .catch(err => console.log(err))
+    // ----------------------------------
   })
 
   element.core.on('busy', () => {
     element.core.isFree = false
     element.core.countUsers += 1
-    queue.core.numUsers -= 1
-    console.log(`ATM ${element.id} serviced: `, element.core.countUsers)
-    setTimeout(() => {
-      element.core.emit('free')
-      element.core.changeState(`atm${element.id}-counter`, `Users served: ${element.core.countUsers}`)
-      element.core.changeColor(`atm-${element.id}`, 'green')
-    }, randomNumber(2, 4) * 1000)
+    // PUT localhost:5000/api/atm/data
+    axios
+      .put('http://localhost:5000/api/atm/data', {
+        id: `ATM${index}`,
+        counter: element.core.countUsers
+      })
+      .then(res => {
+        queue.core.numUsers -= 1
+        console.log(`ATM ${element.id} serviced: `, element.core.countUsers)
+      })
+      .catch(err => console.log(err))
+      .then(res => {
+        setTimeout(() => {
+          // GET localhost:5000/api/atm
+          axios.get('http://localhost:5000/api/atm')
+            .then(res => {
+              // console.log(res.data[element.id].counter)
+              element.core.emit('free')
+              element.core.changeState(`atm${element.id}-counter`, `Users served: ${res.data[element.id].counter}`)
+              element.core.changeColor(`atm-${element.id}`, 'green')
+            })
+            .catch(err => console.log(err))
+          // ---------------------------
+        }, randomNumber(2, 4) * 1000)
+      })
+    // --------------------------------
   })
 
   element.core.on('free', () => {
@@ -120,12 +136,27 @@ function AddEvents (element) {
   })
   element.core.emit('free')
   newArr.push(element)
-  ATMparent.appendChild(element.element)
+  // POST localhost:5000/api/atm/data
+  console.log("OK")
+  axios
+    .post('http://localhost:5000/api/atm/data', {
+      id: `ATM${index}`,
+      counter: element.core.countUsers
+    })
+    .then(res => {
+      console.log(res)
+      ATMparent.appendChild(element.element)
+    })
+    .catch(err => {
+      console.log(err)
+      ATMparent.appendChild(element.element)
+    })
+  // --------------------------------
 }
 
 function AddATM () {
   const newATM = new ATM(newArr.length)
-  AddEvents(newATM)
+  AddEvents(newATM, newArr.length)
 }
 
 BtnAddATM.addEventListener('click', () => {

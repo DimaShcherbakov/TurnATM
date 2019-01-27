@@ -5,7 +5,7 @@ const ATMSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  count: {
+  counter: {
     type: Number,
     required: true
   }
