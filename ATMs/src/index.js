@@ -3,6 +3,7 @@ import ATM from './ATM'
 import Queue from './Queue'
 import randomNumber from './randomNumber'
 
+// лучше отвязаться от первоначальной верстки в index.html как можно скорее. все компоненты на странице лучше рисовать динамически
 const ATMparent = document.getElementById('atms')
 const Queueparent = document.getElementById('counter')
 const BtnAddATM = document.getElementById('btn')
@@ -12,6 +13,7 @@ const inputMax = document.getElementById('input2')
 
 const queue = new Queue()
 
+// а если изначально 10 АТМов придет от сервера?
 const arrayATMs = [new ATM(0), new ATM(1)]
 let newArr = []
 let min
@@ -20,6 +22,7 @@ BtnAddInterval.addEventListener('click', () => {
   min = inputMin.value
   max = inputMax.value
   if ((min === '' && max === '') || (min === '0' && max === '0')) {
+    // у тебя когда-нибудь выполняется данное условие?
     if ((min === '' && max === '0') || (min === '0' && max === '')) {
       console.log('Wrong value')
     }
@@ -32,6 +35,7 @@ BtnAddInterval.addEventListener('click', () => {
 
 function RenderingATMs () {
   newArr = arrayATMs.map((item, index) => {
+    // почему отдельно от остальных обработчиков?
     item.on('CloseComponent_Click', () => {
       item.core.isWork = false
       const parent = document.getElementById('atms')
@@ -104,6 +108,7 @@ function AddEvents (element, index) {
           axios.get('http://localhost:5000/api/atm')
             .then(res => {
               // console.log(res.data[element.id].counter)
+              // вот emit должен вызываться как раз таки в описании методов класса
               element.core.emit('free')
               element.core.changeState(`atm${element.id}-counter`, `Users served: ${res.data[element.id].counter}`)
               element.core.changeColor(`atm-${element.id}`, 'green')

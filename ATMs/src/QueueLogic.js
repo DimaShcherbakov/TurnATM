@@ -1,7 +1,7 @@
 // import randomNumber from './randomNumber'
 
 function QueueLogic () {
-  this.numUsers = 15
+  this.numUsers = 15 // почему 15? а если сервер пришлет 30, ты тут будешь менять?)
 }
 
 // let interval
@@ -21,6 +21,8 @@ QueueLogic.prototype.increment = function () {
 //   clearInterval(interval)
 // }
 
+// опять в логике документ присутствует) почему ты не используешь возможности EventEmiiter.
+// Он специально создан для того, чтобы связывать между собой различные сущности в приложении
 QueueLogic.prototype.changeState = function (id, value) {
   document.getElementById(id).innerHTML = value
 }
