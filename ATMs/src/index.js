@@ -9,6 +9,8 @@ const BtnAddATM = document.getElementById('btn')
 const BtnAddInterval = document.getElementById('add-interval')
 const inputMin = document.getElementById('input1')
 const inputMax = document.getElementById('input2')
+const popupWrap = document.getElementById('popup')
+const popupData = document.getElementById('popup-content')
 
 const queue = new Queue()
 
@@ -16,6 +18,7 @@ const arrayATMs = [new ATM(0), new ATM(1)]
 let newArr = []
 let min
 let max
+
 BtnAddInterval.addEventListener('click', () => {
   min = inputMin.value
   max = inputMax.value
@@ -72,11 +75,15 @@ function AddEvents (element, index) {
   element.on('CloseComponent_Click', () => {
     const parent = document.getElementById('atms')
     const child = document.getElementById(`wrapATM${element.id}`)
+    popupWrap.style.display = 'block'
+    popupData.innerHTML = `ATM${element.id} was deleted..</br><span>${element.core.countUsers}</span>`
+    setTimeout(() => {
+      popupWrap.style.display = 'none'
+    }, 1500)
     // DELETE localhost:5000/api/atm/data
     axios
       .delete(`http://localhost:5000/api/atm/data/ATM${element.id}`)
       .then(res => {
-        console.log("Delete")
         parent.removeChild(child)
         element.core.isWork = false
       })
@@ -95,23 +102,25 @@ function AddEvents (element, index) {
       })
       .then(res => {
         queue.core.numUsers -= 1
+        // queue.core.changeState('user-count', queue.core.numUsers)
         console.log(`ATM ${element.id} serviced: `, element.core.countUsers)
       })
-      .catch(err => console.log(err))
       .then(res => {
         setTimeout(() => {
           // GET localhost:5000/api/atm
           axios.get('http://localhost:5000/api/atm')
             .then(res => {
+              console.log(`GET REQUEST_${res.data[element.id].id} ${res.data[element.id].counter}`)
               // console.log(res.data[element.id].counter)
               element.core.emit('free')
               element.core.changeState(`atm${element.id}-counter`, `Users served: ${res.data[element.id].counter}`)
               element.core.changeColor(`atm-${element.id}`, 'green')
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log('GET catch', err))
           // ---------------------------
         }, randomNumber(2, 4) * 1000)
       })
+      .catch(err => console.log(err))
     // --------------------------------
   })
 
@@ -137,14 +146,13 @@ function AddEvents (element, index) {
   element.core.emit('free')
   newArr.push(element)
   // POST localhost:5000/api/atm/data
-  console.log("OK")
   axios
     .post('http://localhost:5000/api/atm/data', {
       id: `ATM${index}`,
       counter: element.core.countUsers
     })
     .then(res => {
-      console.log(res)
+      console.log(element)
       ATMparent.appendChild(element.element)
     })
     .catch(err => {
@@ -157,6 +165,7 @@ function AddEvents (element, index) {
 function AddATM () {
   const newATM = new ATM(newArr.length)
   AddEvents(newATM, newArr.length)
+  // console.log(newATM, newArr.length)
 }
 
 BtnAddATM.addEventListener('click', () => {

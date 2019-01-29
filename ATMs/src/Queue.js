@@ -10,7 +10,7 @@ Queue.prototype = Object.create(Component.prototype)
 Queue.prototype.constructor = Queue
 
 Queue.prototype.render = function () {
-  return `<p id="user-count">0</p>`
+  return `<p id="user-count">${this.core.numUsers}</p>`
 }
 
 export default Queue
