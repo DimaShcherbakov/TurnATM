@@ -124,7 +124,8 @@ p.speech:after {
 	border-color: #fff transparent transparent #fff; 
 }
 #popup{
-    display:none;
+    display: none;
+    /* visibility: hidden; */
     width:100%;
     min-height:100%;
     background-color: rgba(0,0,0,0.5);

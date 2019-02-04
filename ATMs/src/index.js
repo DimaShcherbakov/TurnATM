@@ -1,173 +1,143 @@
-import axios from 'axios'
-import ATM from './ATM'
 import Queue from './Queue'
+import ATM from './ATM'
+import Form from './Form'
 import randomNumber from './randomNumber'
+import axios from 'axios'
 
-const ATMparent = document.getElementById('atms')
-const Queueparent = document.getElementById('counter')
-const BtnAddATM = document.getElementById('btn')
-const BtnAddInterval = document.getElementById('add-interval')
-const inputMin = document.getElementById('input1')
-const inputMax = document.getElementById('input2')
-const popupWrap = document.getElementById('popup')
-const popupData = document.getElementById('popup-content')
+const PARENT_ATMS = document.getElementById('atms')
+const PARENT_FORM = document.getElementById('root')
+const PARENT_QUEUE = document.getElementById('counter')
 
-const queue = new Queue()
+let form = new Form()
+let queue = new Queue()
+let arrayATMs = []
+let countATMs = 1
+let interval = null
 
-const arrayATMs = [new ATM(0), new ATM(1)]
-let newArr = []
-let min
-let max
+PARENT_FORM.appendChild(form.element)
+PARENT_QUEUE.appendChild(queue.element)
 
-BtnAddInterval.addEventListener('click', () => {
-  min = inputMin.value
-  max = inputMax.value
-  if ((min === '' && max === '') || (min === '0' && max === '0')) {
-    if ((min === '' && max === '0') || (min === '0' && max === '')) {
-      console.log('Wrong value')
-    }
-  } else {
+document.getElementById('btn').addEventListener('click', () => {
+  let newATM = new ATM(arrayATMs.length)
+  arrayATMs.push(newATM)
+  PARENT_ATMS.appendChild(newATM.element)
+  AllEvents(newATM, arrayATMs.length)
+  newATM.core.EmitAddPerson()
+})
+
+document.getElementById('add-interval').addEventListener('click', () => {
+  let min = document.getElementById('input1').value
+  let max = document.getElementById('input2').value
+  if (max > min) {
     clearInterval(interval)
-    queueLoop(min, max)
-    queue.core.changeState('user-count', queue.core.numUsers)
+    queue.core.Not_empty(min, max)
+  } else {
+    console.log('wrong value')
   }
 })
 
-function RenderingATMs () {
-  newArr = arrayATMs.map((item, index) => {
-    item.on('CloseComponent_Click', () => {
-      item.core.isWork = false
-      const parent = document.getElementById('atms')
-      const child = document.getElementById(`wrapATM${index}`)
-      parent.removeChild(child)
-    })
-    AddEvents(item, index)
+document.addEventListener('DOMContentLoaded', ready)
+
+function ready () {
+  CreateATMs(countATMs)
+  queue.core.Not_empty(1, 1)
+  AddEvents()
+  setTimeout(() => {
+    work()
+  }, 1000)
+}
+
+queue.core.on('send_message', (min, max) => {
+  interval = setInterval(() => {
+    queue.core.queueIncrease()
+    console.log(queue.core.numUsers)
+  }, randomNumber(min, max) * 1000)
+})
+
+function CreateATMs (num) {
+  for (let i = 0; i < num; i++) {
+    let item = new ATM(i)
+    arrayATMs.push(item)
+    PARENT_ATMS.appendChild(item.element)
+  }
+}
+
+function work () {
+  arrayATMs.map(element => {
+    element.core.EmitAddPerson()
   })
 }
 
-let interval
-
-function queueLoop (min, max) {
-  return new Promise((resolve, reject) => {
-    const that = queue.core
-    that.changeState('user-count', that.numUsers)
-    interval = setInterval(() => {
-      that.increment()
-      if (that.numUsers === 15) {
-        resolve(that.numUsers)
-      }
-    }, randomNumber(min, max) * 1000)
-  })
-}
-function RenderingQueue () {
-  min = 1
-  max = 4
-  Queueparent.appendChild(queue.element)
-  queueLoop(min, max).then((data) => {
-    AddATM()
-  })
-}
-
-RenderingATMs()
-RenderingQueue()
-
-function AddEvents (element, index) {
-  element.on('CloseComponent_Click', () => {
-    const parent = document.getElementById('atms')
-    const child = document.getElementById(`wrapATM${element.id}`)
-    popupWrap.style.display = 'block'
-    popupData.innerHTML = `ATM${element.id} was deleted..</br><span>${element.core.countUsers}</span>`
+let Timeout = function (element) {
+  if (queue.core.numUsers > 0 && element.core.isFree === true && element.core.isWork === true) {
     setTimeout(() => {
-      popupWrap.style.display = 'none'
-    }, 1500)
-    // DELETE localhost:5000/api/atm/data
+      queue.core.queueDecrease()
+      element.core.EmitBusy()
+      setTimeout(() => {
+        element.core.UpdateData()
+        Timeout(element)
+      }, randomNumber(2, 4) * 1000)
+    }, 1000)
+  } else {
+    setTimeout(() => {
+      Timeout(element)
+    }, randomNumber(1, 3) + 2000)
+  }
+}
+
+function AllEvents (element, index) {
+  console.log(element)
+  element.on('CloseComponent_Click', () => {
+    // DELETE URL: http://localhost:5000/api/atm/data/ATM + id
     axios
       .delete(`http://localhost:5000/api/atm/data/ATM${element.id}`)
       .then(res => {
-        parent.removeChild(child)
-        element.core.isWork = false
+        element.core.DeleteATM()
+        PARENT_ATMS.removeChild(element.element)
       })
       .catch(err => console.log(err))
-    // ----------------------------------
   })
 
-  element.core.on('busy', () => {
-    element.core.isFree = false
-    element.core.countUsers += 1
-    // PUT localhost:5000/api/atm/data
+  element.on('Show_Popup', () => {
+    element.popup.core.EmitShow()
+    console.log(`wrapATM${element.id}`)
+  })
+
+  element.core.on('add_person', () => {
+    Timeout(element)
+  })
+  element.core.on('update_data', (fn) => {
+    // PUT URL: http://localhost:5000/api/atm/data
     axios
       .put('http://localhost:5000/api/atm/data', {
         id: `ATM${index}`,
         counter: element.core.countUsers
       })
-      .then(res => {
-        queue.core.numUsers -= 1
-        // queue.core.changeState('user-count', queue.core.numUsers)
-        console.log(`ATM ${element.id} serviced: `, element.core.countUsers)
-      })
-      .then(res => {
-        setTimeout(() => {
-          // GET localhost:5000/api/atm
-          axios.get('http://localhost:5000/api/atm')
-            .then(res => {
-              console.log(`GET REQUEST_${res.data[element.id].id} ${res.data[element.id].counter}`)
-              // console.log(res.data[element.id].counter)
-              element.core.emit('free')
-              element.core.changeState(`atm${element.id}-counter`, `Users served: ${res.data[element.id].counter}`)
-              element.core.changeColor(`atm-${element.id}`, 'green')
-            })
-            .catch(err => console.log('GET catch', err))
-          // ---------------------------
-        }, randomNumber(2, 4) * 1000)
-      })
+      .then(res => fn)
       .catch(err => console.log(err))
-    // --------------------------------
   })
-
-  element.core.on('free', () => {
-    if (queue.core.numUsers > 0 && element.core.isWork) {
-      setTimeout(() => {
-        element.core.emit('busy')
-        element.core.changeColor(`atm-${element.id}`, 'red')
-      }, 1000)
-    } else if (element.core.isWork !== true) {
-      console.log(
-        `Element ATM${element.id} was deleted. Last num = ${
-          element.core.countUsers
-        }`
-      )
-    } else {
-      console.log('queue is about nothing')
-      setTimeout(() => {
-        element.core.emit('free')
-      }, randomNumber(min, max) * 1000 + 6000)
-    }
-  })
-  element.core.emit('free')
-  newArr.push(element)
-  // POST localhost:5000/api/atm/data
+  // POST URL: http://localhost:5000/api/atm/data
   axios
     .post('http://localhost:5000/api/atm/data', {
       id: `ATM${index}`,
       counter: element.core.countUsers
     })
-    .then(res => {
-      console.log(element)
-      ATMparent.appendChild(element.element)
-    })
+    .then(res => console.log(res))
     .catch(err => {
       console.log(err)
-      ATMparent.appendChild(element.element)
+      axios
+        .get('http://localhost:5000/api/atm')
+        .then(res => {
+          // console.log(res)
+          let count = res.data[element.id].counter
+          element.core.countUsers = count
+        })
+        .catch(err => console.log(err))
     })
-  // --------------------------------
 }
 
-function AddATM () {
-  const newATM = new ATM(newArr.length)
-  AddEvents(newATM, newArr.length)
-  // console.log(newATM, newArr.length)
+function AddEvents () {
+  arrayATMs.map((element, index) => {
+    AllEvents(element, index)
+  })
 }
-
-BtnAddATM.addEventListener('click', () => {
-  AddATM()
-})

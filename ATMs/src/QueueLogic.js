@@ -1,28 +1,29 @@
-// import randomNumber from './randomNumber'
+import EventEmitter from './EventEmitter'
 
 function QueueLogic () {
-  this.numUsers = 15
+  EventEmitter.call(this)
+  this.numUsers = 1
 }
 
-// let interval
+QueueLogic.prototype = Object.create(EventEmitter.prototype)
+QueueLogic.prototype.constructor = QueueLogic
 
-QueueLogic.prototype.increment = function () {
-  // return new Promise((resolve, reject) => {
-  //   const that = this
-  //   that.changeState('user-count', that.numUsers)
-  //   interval = setInterval(() => {
+QueueLogic.prototype.queueIncrease = function () {
   this.numUsers += 1
-  this.changeState('user-count', this.numUsers)
-  console.log(`Number of users in queue = ${this.numUsers}`)
-    //   resolve(that.numUsers)
-    // }, randomNumber(min, max) * 1000)
-  }
-// QueueLogic.prototype.clearInterval = function () {
-//   clearInterval(interval)
-// }
+  this.Change_count()
+}
 
-QueueLogic.prototype.changeState = function (id, value) {
-  document.getElementById(id).innerHTML = value
+QueueLogic.prototype.Not_empty = function (min, max) {
+  this.emit('send_message', min, max)
+}
+
+QueueLogic.prototype.Change_count = function () {
+  this.emit('change_count')
+}
+
+QueueLogic.prototype.queueDecrease = function () {
+  this.numUsers -= 1
+  this.Change_count()
 }
 
 export default QueueLogic
